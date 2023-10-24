@@ -190,7 +190,7 @@ export default class Element {
                 throw Error(`Empty route found`);
             }
 
-            let showElement = document.vjs.route.current.startsWith(route);
+            let showElement = document.vjs.route.startsWith(route);
             routeElement.style.display = showElement ? '' : 'none';
         })
 
@@ -200,7 +200,7 @@ export default class Element {
                 throw Error(`Empty route found`);
             }
 
-            let showElement = document.vjs.route.current === route;
+            let showElement = document.vjs.route === route;
             routeElement.style.display = showElement ? '' : 'none';
         });
     }
@@ -255,7 +255,7 @@ export default class Element {
                 throw Error(`Empty redirect found`);
             }
 
-            redirectElement.addEventListener('click', () => document.vjs.route.setRoute(redirect));
+            redirectElement.addEventListener('click', () => document.vjs.route = redirect);
         });
     }
 

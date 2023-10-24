@@ -6,12 +6,12 @@
     <script type="module" src="../../src/index.mjs"></script>
 </head>
 <body>
-<div v-route="/">
-    Home page
-    <button v-redirect="/page-1">Page 1</button>
-    <button v-redirect="/page-2">Page 2</button>
-</div>
-<div v-route="/page-1" v-import="page-1"></div>
-<div v-route="/page-2" v-import="page-2"></div>
+    <div v-route="/">
+        Home page
+        <button v-redirect="/page-1">Page 1</button>
+        <button v-redirect="/page-2">Page 2</button>
+    </div>
+    <div v-route="/page-1" v-import="page-1"></div>
+    <div v-route="/page-2" v-import="page-2"></div>
 </body>
 </html>
