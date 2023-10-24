@@ -1,3 +1,5 @@
+import Template from './template.mjs'
+
 export default class Element {
     /**
      * @type {HTMLElement}
@@ -12,6 +14,12 @@ export default class Element {
     _elements;
 
     /**
+     * @type {Object<string, Template>}
+     * @private
+     */
+    _templates;
+
+    /**
      * @param {HTMLElement|string} target
      */
     constructor(target) {
@@ -22,6 +30,7 @@ export default class Element {
         }
 
         this._elements = this._loadElements();
+        this._templates = this._loadTemplates();
         this._initializeElement();
     }
 
@@ -30,6 +39,13 @@ export default class Element {
      */
     get elements () {
         return this._elements;
+    }
+
+    /**
+     * @returns {Object<string, Template>}
+     */
+    get templates () {
+        return this._templates;
     }
 
     get text() {
@@ -47,8 +63,6 @@ export default class Element {
      */
 
     /**
-     *
-     *
      * @param {keyof HTMLElementEventMap} event
      * @param {onCallback} callback
      */
@@ -65,6 +79,28 @@ export default class Element {
     off (event, callback) {
         this._element
             .removeEventListener(event, (event) => callback(event, this._element));
+    }
+
+    /**
+     * @param {Element} element
+     */
+    prependChild(element) {
+        this._element.prependChild(element._element);
+    }
+
+    /**
+     * @param {Element} element
+     */
+    appendChild(element) {
+        this._element.appendChild(element._element);
+    }
+
+    /**
+     * @returns {HTMLElement}
+     * @private
+     */
+    _getElement () {
+        return this._element;
     }
 
     /**
@@ -93,6 +129,21 @@ export default class Element {
         });
 
         return elements;
+    }
+
+    /**
+     * @returns {Object<string, Template>}
+     * @private
+     */
+    _loadTemplates() {
+        /** @var {Object<string, Template>} */
+        const templates = {};
+
+        this._element.querySelectorAll('template[v-template]').forEach(element => {
+            templates[element.getAttribute('v-template')] = new Template(element);
+        });
+
+        return templates;
     }
 
     /**

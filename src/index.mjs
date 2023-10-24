@@ -1,8 +1,8 @@
-import Component from "./component.mjs";
+import ElementComponent from "./elementComponent.mjs";
 import Element from "./element.mjs";
 
 document.vjs = {
-    initialiseComponent: (componentName) => new Component(componentName)
+    initialiseComponent: (componentName) => new ElementComponent(componentName)
 }
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,6 +1,6 @@
 import Element from "./element.mjs";
 
-export default class Component extends Element {
+export default class ElementComponent extends Element {
     /**
      * @param {string} componentName
      */
