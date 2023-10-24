@@ -1,0 +1,9 @@
+<div v-component="sub-page-1">
+    Sub Page 1
+    <button v-redirect="/page-1">Main</button>
+    <button v-redirect="/page-1/sub-page-2">Sub Page 2</button>
+</div>
+
+<script>
+    document.vjs.initialiseComponent('sub-page-1')
+</script>

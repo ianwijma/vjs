@@ -190,18 +190,19 @@ export default class Element {
                 throw Error(`Empty route found`);
             }
 
-            this._applyRoute(routeElement, route);
-        });
-    }
+            let showElement = document.vjs.route.current.startsWith(route);
+            routeElement.style.display = showElement ? '' : 'none';
+        })
 
-    /**
-     * @param {HTMLElement} element
-     * @param {string} route
-     * @private
-     */
-    _applyRoute(element, route) {
-        const showElement = route === document.vjs.route.current;
-        element.style.display = showElement ? '' : 'none';
+        this._element.querySelectorAll('[v-route-strict]')?.forEach(routeElement => {
+            const route = routeElement.getAttribute('v-route-strict');
+            if (!route) {
+                throw Error(`Empty route found`);
+            }
+
+            let showElement = document.vjs.route.current === route;
+            routeElement.style.display = showElement ? '' : 'none';
+        });
     }
 
     /**

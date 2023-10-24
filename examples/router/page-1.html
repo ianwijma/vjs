@@ -1,7 +1,17 @@
 <div v-component="page-1">
-    Page 1
-    <button v-redirect="/">Home</button>
-    <button v-redirect="/page-2">Page 2</button>
+    <div>
+        Page 1
+        <button v-redirect="/">Home</button>
+        <button v-redirect="/page-2">Page 2</button>
+    </div>
+    <div>
+        <div v-route-strict="/page-1">
+            <button v-redirect="/page-1/sub-page-1">Sub Page 1</button>
+            <button v-redirect="/page-1/sub-page-2">Sub Page 2</button>
+        </div>
+        <div v-route="/page-1/sub-page-1" v-import="page-1/sub-page-1"></div>
+        <div v-route="/page-1/sub-page-2" v-import="page-1/sub-page-2"></div>
+    </div>
 </div>
 
 <script>
