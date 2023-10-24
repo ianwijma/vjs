@@ -27,11 +27,12 @@ export default class Element {
             this._element = target;
         } else {
             this._element = this._loadElement(target);
+            if (!this._element) throw Error(`Element with selector ${target} not found`);
         }
 
         this._elements = this._loadElements();
         this._templates = this._loadTemplates();
-        this._initializeElement();
+        this._initialize();
     }
 
     /**
@@ -63,22 +64,48 @@ export default class Element {
      */
 
     /**
-     * @param {keyof HTMLElementEventMap} event
+     * @param {string|keyof HTMLElementEventMap} event
      * @param {onCallback} callback
      */
     on (event, callback) {
-        this._element.addEventListener(event, (event) => callback(event, this._element));
+        this._element.addEventListener(
+            event,
+            (event) => callback(event, this._element)
+        );
+    }
+
+    /**
+     * @param {string|keyof HTMLElementEventMap} event
+     * @param {onCallback} callback
+     */
+    once (event, callback) {
+        this._element.addEventListener(
+            event,
+            (event) => callback(event, this._element),
+            { once: true }
+        );
     }
 
     /**
      *
      *
-     * @param {keyof HTMLElementEventMap} event
+     * @param {string|keyof HTMLElementEventMap} event
      * @param {onCallback} callback
      */
     off (event, callback) {
-        this._element
-            .removeEventListener(event, (event) => callback(event, this._element));
+        this._element.removeEventListener(
+            event,
+            (event) => callback(event, this._element)
+        );
+    }
+
+    /**
+     * @param {string|keyof HTMLElementEventMap} event
+     */
+    trigger (event) {
+        this._element.dispatchEvent(
+            new Event(event)
+        );
     }
 
     /**
@@ -149,8 +176,32 @@ export default class Element {
     /**
      * @private
      */
-    _initializeElement() {
+    _initialize() {
+        this._initializeRoutes();
         this._initializeImports();
+        this._initializeRedirects();
+        this._initializeListeners();
+    }
+
+    _initializeRoutes() {
+        this._element.querySelectorAll('[v-route]')?.forEach(routeElement => {
+            const route = routeElement.getAttribute('v-route');
+            if (!route) {
+                throw Error(`Empty route found`);
+            }
+
+            this._applyRoute(routeElement, route);
+        });
+    }
+
+    /**
+     * @param {HTMLElement} element
+     * @param {string} route
+     * @private
+     */
+    _applyRoute(element, route) {
+        const showElement = route === document.vjs.route.current;
+        element.style.display = showElement ? '' : 'none';
     }
 
     /**
@@ -190,6 +241,29 @@ export default class Element {
             newScriptElement.appendChild(scriptText);
 
             scriptElement.parentNode.replaceChild(newScriptElement, scriptElement)
+        })
+    }
+
+    /**
+     * @private
+     */
+    _initializeRedirects() {
+        this._element.querySelectorAll('[v-redirect]')?.forEach(redirectElement => {
+            const redirect = redirectElement.getAttribute('v-redirect');
+            if (!redirect) {
+                throw Error(`Empty redirect found`);
+            }
+
+            redirectElement.addEventListener('click', () => document.vjs.route.setRoute(redirect));
+        });
+    }
+
+    /**
+     * @private
+     */
+    _initializeListeners() {
+        this.on('redirected', () => {
+            this._initializeRoutes();
         })
     }
 }
