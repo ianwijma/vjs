@@ -1,0 +1,17 @@
+<div v-component="simple">
+  <span v-element="display"></span>
+  <button v-element="action">+1</button>
+  <div v-import="folder/image"></div>
+</div>
+
+<script>
+  const component = document.vjs.initialiseComponent('simple');
+  const { display, action } = component.elements;
+
+
+  let number = 0;
+  display.text = number;
+  action.on('click', () => {
+    display.text = ++number
+  });
+</script>
