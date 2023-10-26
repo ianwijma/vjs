@@ -6,9 +6,21 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Simple</title>
-    <script type="module" src="../../src/index.mjs"></script>
 </head>
 <body>
-    <div v-import="component"></div>
+    <div id="app" v-import="component"></div>
+
+    <script type="module">
+        import startVjs from '../../src/index.mjs';
+
+        const app = document.getElementById('app');
+        const vjs = startVjs(app, [
+            await import('../../src/handlers/importHandler.mjs'),
+            await import('../../src/handlers/componentHandler.mjs'),
+            await import('../../src/handlers/elementHandler.mjs'),
+            await import('../../src/handlers/templateHandler.mjs'),
+            await import('../../src/handlers/scriptHandler.mjs'),
+        ]);
+    </script>
 </body>
 </html>

@@ -1,38 +1,32 @@
-import Element from "./element.mjs";
-
 export const TemplateVariableRegex = new RegExp(/{{\s*(\S+)\s*}}/, 'gm');
 
-export default class Template {
+export class Template {
     /**
      * @type {HTMLTemplateElement}
      * @private
      */
-    _templateElement;
+    _element;
 
     /**
      * @var {string}
      * @private
      */
-    _templateHtml= '';
+    _html= '';
 
     /**
      * @var {string[]}
      * @private
      */
-    _templateVariables = [];
+    _variables = [];
 
 
     /**
      * @param {HTMLTemplateElement} templateElement
      */
     constructor(templateElement) {
-        if (templateElement.content.children.length > 1) {
-            throw Error('Template can not have more than 1 root element');
-        }
-
-        this._templateElement = templateElement;
-        this._templateHtml = this._normaliseTemplateHtml(templateElement.innerHTML);
-        this._templateVariables = this._extractTemplateVariables(this._templateHtml);
+        this._element = templateElement;
+        this._html = this._normaliseTemplateHtml(templateElement.innerHTML);
+        this._variables = this._extractTemplateVariables(this._html);
     }
 
     /**
@@ -41,14 +35,14 @@ export default class Template {
 
     /**
      * @param {TemplateData} templateData
-     * @return Element
+     * @return HTMLElement
      */
     render(templateData) {
         const container = document.createElement('template');
-        container.innerHTML = this._templateHtml;
+        container.innerHTML = this._html;
 
         const data = this._objectToFlat(templateData);
-        this._templateVariables.forEach(variable => {
+        this._variables.forEach(variable => {
             let value = '';
             if (variable in data) {
                 value = data[variable];
@@ -66,7 +60,7 @@ export default class Template {
             ''
         );
 
-        return new Element(container.content.firstElementChild);
+        return container.content.firstElementChild;
     }
 
     /**
@@ -102,7 +96,7 @@ export default class Template {
         const regex = TemplateVariableRegex;
 
         let match;
-        while ((match = regex.exec(this._templateHtml)) !== null) {
+        while ((match = regex.exec(this._html)) !== null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (match.index === regex.lastIndex) {
                 regex.lastIndex++;

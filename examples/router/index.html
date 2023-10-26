@@ -3,15 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Template</title>
-    <script type="module" src="../../src/index.mjs"></script>
 </head>
 <body>
-    <div v-route="/">
-        Home page
-        <button v-redirect="/page-1">Page 1</button>
-        <button v-redirect="/page-2">Page 2</button>
+    <div id="app">
+        <div v-route="/">
+            Home page
+            <button v-redirect="/page-1">Page 1</button>
+            <button v-redirect="/page-2">Page 2</button>
+        </div>
+        <div v-route="/page-1" v-import="page-1"></div>
+        <div v-route="/page-2" v-import="page-2"></div>
     </div>
-    <div v-route="/page-1" v-import="page-1"></div>
-    <div v-route="/page-2" v-import="page-2"></div>
+
+    <script type="module">
+        import startVjs from '../../src/index.mjs';
+        const app = document.getElementById('app');
+
+        const vjs = startVjs(app, [
+            await import('../../src/handlers/importHandler.mjs'),
+            await import('../../src/handlers/componentHandler.mjs'),
+            await import('../../src/handlers/elementHandler.mjs'),
+            await import('../../src/handlers/templateHandler.mjs'),
+            await import('../../src/handlers/scriptHandler.mjs'),
+            await import('../../src/handlers/routeHandler.mjs'),
+            await import('../../src/handlers/routeStrictHandler.mjs'),
+            await import('../../src/handlers/redirectHandler.mjs'),
+        ]);
+    </script>
 </body>
 </html>

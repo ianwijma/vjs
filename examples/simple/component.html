@@ -1,17 +1,21 @@
 <div v-component="simple">
-  <span v-element="display"></span>
-  <button v-element="action">+1</button>
+  <button v-element="decrement">-1</button>
+  <span v-element="counter"></span>
+  <button v-element="increment">+1</button>
   <div v-import="folder/image"></div>
 </div>
 
 <script>
-  const component = document.vjs.initialiseComponent('simple');
-  const { display, action } = component.elements;
+  const { counter, decrement, increment } = component.elements;
 
+  let current = 0;
 
-  let number = 0;
-  display.text = number;
-  action.on('click', () => {
-    display.text = ++number
-  });
+  counter.innerHTML = current;
+
+  decrement.addEventListener('click', () => {
+    counter.innerHTML = --current;
+  })
+  increment.addEventListener('click', () => {
+    counter.innerHTML = ++current;
+  })
 </script>

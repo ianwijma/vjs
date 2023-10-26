@@ -3,9 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Template</title>
-    <script type="module" src="../../src/index.mjs"></script>
 </head>
 <body>
-<div v-import="template"></div>
+    <div id="app" v-import="template"></div>
+
+    <script type="module">
+        import startVjs from '../../src/index.mjs';
+        const app = document.getElementById('app');
+
+        const vjs = startVjs(app, [
+            await import('../../src/handlers/importHandler.mjs'),
+            await import('../../src/handlers/componentHandler.mjs'),
+            await import('../../src/handlers/elementHandler.mjs'),
+            await import('../../src/handlers/templateHandler.mjs'),
+            await import('../../src/handlers/scriptHandler.mjs'),
+        ]);
+    </script>
 </body>
 </html>

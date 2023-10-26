@@ -1,6 +1,9 @@
-import App from "./app.js";
+import { Component } from "./component.mjs";
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.vjs = new App('body');
-    document.vjs.start();
-})
+/**
+ * @param {HTMLElement} element
+ * @param {import('component.mjs').TagHandler[]} tagHandlers
+ */
+export default function startVjs(element, tagHandlers) {
+    return new Component(element, tagHandlers);
+}
