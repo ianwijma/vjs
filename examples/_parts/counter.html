@@ -8,8 +8,8 @@
     let counter = 0;
 
     const updateDisplay = () => display.innerText = counter;
-    subtract.addEventListener('click', () => --counter && updateDisplay());
-    add.addEventListener('click', () => ++counter && updateDisplay());
+    subtract.addEventListener('click', () => {--counter; updateDisplay()});
+    add.addEventListener('click', () => {++counter; updateDisplay()});
 
     updateDisplay();
 </script>
