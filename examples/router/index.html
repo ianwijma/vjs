@@ -2,33 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Template</title>
+    <title>Router</title>
+
+    <script type="module">
+        // Import initialize method
+        import { startVjs, attributeHandlers } from '../../src/index.mjs';
+
+        const app = document.getElementById('app');
+        startVjs(app, attributeHandlers);
+    </script>
 </head>
 <body>
     <div id="app">
-        <div v-route="/">
+        <div v-route-exact="/">
             Home page
             <button v-redirect="/page-1">Page 1</button>
             <button v-redirect="/page-2">Page 2</button>
+            <button v-redirect="/page-3">Page 3</button>
         </div>
         <div v-route="/page-1" v-import="page-1"></div>
         <div v-route="/page-2" v-import="page-2"></div>
+        <div v-route="/page-3">
+            <p>
+                You're only able to go back to home, if the input equals "Hello"
+            </p>
+            <button v-element="action">Home</button>
+            <input type="text" v-element="input">
+
+            <script type="javascript" v-script>
+                const { action, input } = vjs.elements;
+                const wantedInput = 'hello';
+
+                action.addEventListener('click', () => {
+                    if (wantedInput === input.value.toLowerCase()) {
+                        vjs.router.route = '/'
+                    }
+                })
+            </script>
+        </div>
     </div>
-
-    <script type="module">
-        import startVjs from '../../src/index.mjs';
-        const app = document.getElementById('app');
-
-        const vjs = startVjs(app, [
-            await import('../../src/handlers/importHandler.mjs'),
-            await import('../../src/handlers/componentHandler.mjs'),
-            await import('../../src/handlers/elementHandler.mjs'),
-            await import('../../src/handlers/templateHandler.mjs'),
-            await import('../../src/handlers/scriptHandler.mjs'),
-            await import('../../src/handlers/routeHandler.mjs'),
-            await import('../../src/handlers/routeStrictHandler.mjs'),
-            await import('../../src/handlers/redirectHandler.mjs'),
-        ]);
-    </script>
 </body>
 </html>

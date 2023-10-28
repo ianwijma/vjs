@@ -1,10 +1,4 @@
-
-/**
- * @typedef {Object} TagHandler
- * @property {string} tag
- * @property {number} importance
- * @property {function} handler
- */
+import { ComponentContext } from './componentContext.js'
 
 export class Component {
     /**
@@ -14,27 +8,19 @@ export class Component {
     _mount;
 
     /**
-     * @var {Object<string, HTMLElement[]>}
+     * @var {ComponentContext}
      * @private
      */
-    _tags;
-
-    /**
-     * @var {TagHandler[]}
-     * @private
-     */
-    _tagHandlers;
+    _context;
 
     /**
      * @param {HTMLElement} mount
-     * @param {TagHandler[]} tagHandlers
+     * @param {ComponentContext} context
      */
-    constructor(mount, tagHandlers) {
+    constructor(mount, context) {
         this._mount = mount;
-        this._tags = this._getTags();
-        this._tagHandlers = tagHandlers;
+        this._context = context;
         this._initialize();
-        mount.component = this;
     }
 
     reloadTags() {
@@ -42,21 +28,46 @@ export class Component {
     }
 
     /**
-     * @private
+     * @returns {ComponentContext}
      */
-    _initialize() {
-        this._triggerHandlers();
+    get context() {
+        return this._context;
     }
 
     /**
      * @private
      */
-    async _triggerHandlers() {
-        const tagHandlers = this._tagHandlers.sort((a, b) => b.importance - a.importance);
-        for (const tagHandler of tagHandlers) {
-            const elements = this._tags[tagHandler.tag] ?? [];
-            for (const element of elements) {
-                await tagHandler.handler(this, element);
+    _initialize() {
+        this._runAttributeHandlers();
+    }
+
+    /**
+     * @private
+     */
+    _runAttributeHandlers() {
+        const attributeHandlers = this.context.attributeHandlers.sort((a, b) => b.importance - a.importance);
+        for (const attributeHandler of attributeHandlers) {
+            let { attributes } = attributeHandler;
+            attributes = Array.isArray(attributes) ? attributes : [attributes];
+            for (const attribute of attributes) {
+                this._mount.querySelectorAll(`[${attribute}]`)
+                    .forEach(element => attributeHandler.handler(this, element))
+            }
+        }
+    }
+
+    /**
+     * @private
+     */
+    async _applyTagHandlers() {
+        const { tagHandlers: handlers } = this._context;
+        for (const handler of handlers) {
+            const handlerTags = Array.isArray(handler.tags) ? handler.tags : [handler.tags];
+            for (const handlerTag of handlerTags) {
+                const elements = this._tags[handlerTag] ?? [];
+                for (const element of elements) {
+                    await handler.handler(this, element);
+                }
             }
         }
     }
@@ -68,23 +79,18 @@ export class Component {
     _getTags() {
         /** @var {HTMLElement[]} */
         const elements = Array.from(this._mount.querySelectorAll('*'));
-        elements.unshift(this._mount);
 
-        const tagMap = {
-            '_': [this._mount]
-        };
-
+        const tagMap = {};
         for (const element of elements) {
             const attributes = Object.values(element.attributes);
             const attributeNames = attributes.map(attribute => attribute.name);
             const tags = attributeNames.filter(name => name.startsWith('v-'));
-            const tagNames = tags.map(tag => tag.substring(2));
-            for (const tagName of tagNames) {
-                if (!(tagName in tagMap)) {
-                    tagMap[tagName] = [];
+            for (const tag of tags) {
+                if (!(tag in tagMap)) {
+                    tagMap[tag] = [];
                 }
 
-                tagMap[tagName].push(element);
+                tagMap[tag].push(element);
             }
         }
 

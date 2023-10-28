@@ -3,21 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Template</title>
-</head>
-<body>
-    <div id="app" v-import="template"></div>
 
     <script type="module">
-        import startVjs from '../../src/index.mjs';
-        const app = document.getElementById('app');
+        // Import initialize method
+        import { startVjs, attributeHandlers } from '../../src/index.mjs';
 
-        const vjs = startVjs(app, [
-            await import('../../src/handlers/importHandler.mjs'),
-            await import('../../src/handlers/componentHandler.mjs'),
-            await import('../../src/handlers/elementHandler.mjs'),
-            await import('../../src/handlers/templateHandler.mjs'),
-            await import('../../src/handlers/scriptHandler.mjs'),
-        ]);
+        const app = document.getElementById('app');
+        startVjs(app, attributeHandlers);
     </script>
+</head>
+<body>
+    <div id="app">
+        <template v-template="row">
+            <tr>
+                <td>{{name}}</td>
+                <td>{{age}}</td>
+            </tr>
+        </template>
+
+        <table>
+            <thead>
+            <tr>
+                <td>Name</td>
+                <td>Age</td>
+            </tr>
+            </thead>
+            <tbody v-element="body"></tbody>
+        </table>
+
+        <script type="javascript" v-script>
+            const { body } = vjs.elements;
+            const { row } = vjs.templates;
+
+            const employees = [
+                {name: 'Ian', age: 30},
+                {name: 'John', age: 25},
+                {name: 'Jane', age: 35},
+            ]
+
+            employees.forEach(employee => {
+                body.appendChild(row.render(employee));
+            })
+        </script>
+    </div>
 </body>
 </html>

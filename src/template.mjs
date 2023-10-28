@@ -1,3 +1,5 @@
+import {Component} from "./component.mjs";
+
 export const TemplateVariableRegex = new RegExp(/{{\s*(\S+)\s*}}/, 'gm');
 
 export class Template {
@@ -19,12 +21,19 @@ export class Template {
      */
     _variables = [];
 
+    /**
+     * @var {Component}
+     * @private
+     */
+    _parentComponent;
 
     /**
      * @param {HTMLTemplateElement} templateElement
+     * @param {Component} parentComponent
      */
-    constructor(templateElement) {
+    constructor(templateElement, parentComponent) {
         this._element = templateElement;
+        this._parentComponent = parentComponent;
         this._html = this._normaliseTemplateHtml(templateElement.innerHTML);
         this._variables = this._extractTemplateVariables(this._html);
     }
@@ -60,7 +69,13 @@ export class Template {
             ''
         );
 
-        return container.content.firstElementChild;
+        const element = container.content.firstElementChild;
+
+        element.addEventListener('template:inserted', () => {
+            new Component(element, this._parentComponent.context.clone());
+        }, {once: true});
+
+        return element;
     }
 
     /**
