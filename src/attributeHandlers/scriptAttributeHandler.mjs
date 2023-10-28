@@ -7,6 +7,7 @@ export class ScriptAttributeHandler extends AbstractAttributeHandler {
     async handler(__COMPONENT__, __ELEMENT__) {
         // Setup vjs context
         const vjs = {
+            ...__COMPONENT__.context.data,
             router: router,
             elements: __COMPONENT__.context.data.elements ?? {},
             templates: __COMPONENT__.context.data.templates ?? {},

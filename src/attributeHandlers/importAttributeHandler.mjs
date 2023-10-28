@@ -13,9 +13,7 @@ export class ImportAttributeHandler extends AbstractAttributeHandler {
         const response = await fetch(importPath);
         element.innerHTML = await response.text();
 
-        if (component._mount === element) {
-            component.reloadTags();
-        } else {
+        if (component._mount !== element) {
             new Component(element, component.context.clone());
         }
     }
