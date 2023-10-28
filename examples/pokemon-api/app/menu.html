@@ -1,0 +1,40 @@
+<div id="menu" uk-offcanvas>
+    <div class="uk-offcanvas-bar">
+
+        <button class="uk-offcanvas-close" type="button" uk-close></button>
+
+        <ul class="uk-list" v-element="list"></ul>
+    </div>
+
+    <template v-template="item">
+        <li>
+            <button v-element="button" >
+                {{name}}
+            </button>
+
+            <script v-script>
+                const { button } = vjs.elements;
+
+                button.addEventListener('click', () => {
+                    vjs.router.route = `/pkmn/{{name}}`;
+                    UIkit.offcanvas(document.getElementById('menu')).hide();
+                });
+            </script>
+        </li>
+    </template>
+</div>
+
+<script type="javascript" v-script>
+    (async function () {
+        const { list } = vjs.elements;
+        const { item } = vjs.templates;
+
+        const pokedex = new Pokedex.Pokedex()
+        const { results: pokemons } = await pokedex.getPokemons();
+
+        pokemons.forEach(pokemon => {
+            list.appendChild(item.render(pokemon));
+        });
+
+    })()
+</script>

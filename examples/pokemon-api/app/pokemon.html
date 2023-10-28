@@ -1,0 +1,57 @@
+<div>
+    <div v-element="target"></div>
+    <template v-template="source">
+        <div>
+            <h1>{{name}}</h1>
+
+            <div class="uk-position-relative uk-dark" uk-slideshow>
+                <ul class="uk-slideshow-items uk-dotnav-vertical">
+                    <li>
+                        <img src="{{sprites.front_default}}" uk-image>
+                    </li>
+                    <li>
+                        <img src="{{sprites.back_default}}" uk-image>
+                    </li>
+                    <li>
+                        <img src="{{sprites.front_shiny}}" alt="" uk-image>
+                    </li>
+                    <li>
+                        <img src="{{sprites.back_shiny}}" alt="" uk-image>
+                    </li>
+                </ul>
+
+                <div class="uk-position-bottom-center uk-position-small">
+                    <ul class="uk-dotnav">
+                        <li uk-slideshow-item="0"><a></a></li>
+                        <li uk-slideshow-item="1"><a></a></li>
+                        <li uk-slideshow-item="2"><a></a></li>
+                        <li uk-slideshow-item="3"><a></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </template>
+</div>
+
+<script type="javascript" v-script>
+    const pokedex = new Pokedex.Pokedex();
+
+    const { target } = vjs.elements;
+    const { source } = vjs.templates;
+    const { router } = vjs;
+
+    const path = '/pkmn/';
+
+    const load = async () => {
+        if (!router.route.startsWith(path)) return
+        const name = router.route.substring(path.length);
+
+        const pokemon = await pokedex.getPokemonByName(name);
+        console.log(pokemon);
+        target.innerHTML = '';
+        target.appendChild(source.render(pokemon));
+    };
+
+    load();
+    router.on('redirect', () => load());
+</script>

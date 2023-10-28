@@ -1,6 +1,24 @@
-<div>
-
-</div>
+<main>
+    <nav class="uk-navbar-container">
+        <div class="uk-container">
+            <div uk-navbar>
+                <div v-import="app/menu"></div>
+                <div class="uk-navbar-left">
+                    <button uk-toggle="target: #menu" type="button">
+                        Menu
+                    </button>
+                </div>
+                <div class="uk-navbar-right" v-redirect="/">
+                    LOGO HERE
+                </div>
+            </div>
+        </div>
+    </nav>
+    <article>
+        <div v-route-exact="/">Home</div>
+        <div v-route="/pkmn" v-import="app/pokemon">Home</div>
+    </article>
+</main>
 
 <script type="javascript" v-script>
 
