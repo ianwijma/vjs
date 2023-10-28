@@ -7,14 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Pokemon</title>
 
+    <script src="https://unpkg.com/pokeapi-js-wrapper@1.2.3/dist/index.js"></script>
     <script type="module">
         import { startVjs, attributeHandlers } from '../../src/index.mjs';
-        import {PokedexAttributeProvider} from "./src/PokedexAttributeProvider.mjs";
 
-        startVjs(document.body, [
-            ...Object.values(attributeHandlers),
-            PokedexAttributeProvider
-        ]);
+        startVjs(document.body, attributeHandlers);
     </script>
 </head>
 <body id="app">
