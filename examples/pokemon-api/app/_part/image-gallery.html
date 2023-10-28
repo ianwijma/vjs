@@ -1,0 +1,32 @@
+<div class="uk-position-relative uk-dark" uk-slideshow v-element="gallery">
+    <ul class="uk-slideshow-items uk-dotnav-vertical" v-element="imageContainer"></ul>
+
+    <div class="uk-position-bottom-center uk-position-small">
+        <ul class="uk-dotnav" v-element="dotContainer"></ul>
+    </div>
+
+    <template v-template="image">
+        <li>
+            <img src="{{imageUrl}}" uk-image>
+        </li>
+    </template>
+
+    <template v-template="dot">
+        <li uk-slideshow-item="0"><a></a></li>
+    </template>
+</div>
+
+<script type="javascript" v-script>
+    const { images = [], height } = vjs.importData;
+    const { gallery, imageContainer, dotContainer } = vjs.elements;
+    const { image, dot } = vjs.templates;
+
+    if (height) {
+        gallery.style.height = height;
+    }
+
+    images.forEach(imageUrl => {
+        imageContainer.appendChild(image.render({ imageUrl }));
+        dotContainer.appendChild(dot.render());
+    });
+</script>

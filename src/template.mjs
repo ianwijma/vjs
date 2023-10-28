@@ -46,7 +46,7 @@ export class Template {
      * @param {TemplateData} templateData
      * @return HTMLElement
      */
-    render(templateData) {
+    render(templateData = {}) {
         const container = document.createElement('template');
         container.innerHTML = this._html;
 

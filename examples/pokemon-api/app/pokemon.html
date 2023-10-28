@@ -1,34 +1,11 @@
 <div>
     <div v-element="target"></div>
+
     <template v-template="source">
         <div>
             <h1>{{name}}</h1>
 
-            <div class="uk-position-relative uk-dark" uk-slideshow>
-                <ul class="uk-slideshow-items uk-dotnav-vertical">
-                    <li>
-                        <img src="{{sprites.front_default}}" uk-image>
-                    </li>
-                    <li>
-                        <img src="{{sprites.back_default}}" uk-image>
-                    </li>
-                    <li>
-                        <img src="{{sprites.front_shiny}}" alt="" uk-image>
-                    </li>
-                    <li>
-                        <img src="{{sprites.back_shiny}}" alt="" uk-image>
-                    </li>
-                </ul>
-
-                <div class="uk-position-bottom-center uk-position-small">
-                    <ul class="uk-dotnav">
-                        <li uk-slideshow-item="0"><a></a></li>
-                        <li uk-slideshow-item="1"><a></a></li>
-                        <li uk-slideshow-item="2"><a></a></li>
-                        <li uk-slideshow-item="3"><a></a></li>
-                    </ul>
-                </div>
-            </div>
+            <div v-import="app/_part/image-gallery" v-import-data="{{pokemon_images}}"></div>
         </div>
     </template>
 </div>
@@ -48,8 +25,21 @@
 
         const pokemon = await pokedex.getPokemonByName(name);
         console.log(pokemon);
+        const { sprites } = pokemon;
+
         target.innerHTML = '';
-        target.appendChild(source.render(pokemon));
+        target.appendChild(source.render({
+            ...pokemon,
+            pokemon_images: JSON.stringify({
+                height: '150px',
+                images: [
+                    sprites.front_default,
+                    sprites.back_default,
+                    sprites.front_shiny,
+                    sprites.back_shiny,
+                ]
+            }).replaceAll('"', "'")
+        }));
     };
 
     load();

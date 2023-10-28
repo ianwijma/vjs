@@ -10,11 +10,18 @@ export class ImportAttributeHandler extends AbstractAttributeHandler {
             importPath = `${importPath}.html`;
         }
 
+        let importData = element.getAttribute('v-import-data');
+        if (importData) {
+            importData = JSON.parse(importData.replaceAll("'", '"'));
+        }
+
         const response = await fetch(importPath);
         element.innerHTML = await response.text();
 
         if (component._mount !== element) {
-            new Component(element, component.context.clone());
+            const context = component.context.clone();
+            context.updateData({ importData })
+            new Component(element, context);
         }
     }
 }
